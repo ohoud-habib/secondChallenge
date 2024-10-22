@@ -16,10 +16,6 @@ struct Finished: View {
         
         VStack {
             
-            Text("My Plants 🌱")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .offset(x: -56, y: -70)
             
             Image("blinkplant")
                 .imageScale(.large)
@@ -27,6 +23,7 @@ struct Finished: View {
             
             Text("All Done! 🎉 ")
                 .font(.custom("SFPro", size: 25))
+                .padding(.bottom)
             
             Text("All Reminders Completed")
                 .font(.custom("SFPro", size: 16))
@@ -40,15 +37,18 @@ struct Finished: View {
                     Image(systemName: "plus.circle.fill")
                     Text("Add Reminder")
                 }
-                .padding()
+               
             }
-            .padding([.top, .trailing], 230.0)
+            .padding(.top, 240.0)
+            .padding(.trailing,240 )
+            
             
         }
+        .navigationTitle("My Plants 🌱")
      }
     }
 }
 
 #Preview {
-    Nav()
+    SetReminder()
 }
