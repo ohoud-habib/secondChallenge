@@ -60,7 +60,7 @@ struct SetReminder: View {
                     .padding(.trailing,230 )
                 }
             }
-            .navigationBarBackButtonHidden(true)
+      
             .sheet(isPresented: $remindersheet) {
                 NavigationView {
                     Form {
@@ -144,7 +144,7 @@ struct SetReminder: View {
                 }
                 
             }
-        }
+        } .navigationBarBackButtonHidden(true)
     }
 
     private func deleteItems(at offsets: IndexSet) {
