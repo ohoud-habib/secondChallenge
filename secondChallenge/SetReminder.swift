@@ -1,92 +1,10 @@
 import SwiftUI
 
 
-struct Reminder: Identifiable {
-    let id = UUID()
-    var text: String
-    var isChecked: Bool
-}
-
-struct ReminderView: View {
-    var reminder: Reminder
-    var toggleAction: () -> Void
-
-    private let colorMapping: [String: Color] = [
-        "Room": Color.blue.opacity(0.3),
-        "Plant": Color.green.opacity(0.3),
-        "Light": Color.yellow.opacity(0.3),
-        "Watering Days": Color.orange.opacity(0.3),
-        "Water Amount": Color.purple.opacity(0.3)
-    ]
-    
-    var body: some View {
-        HStack {
-            Button(action: toggleAction) {
-                Image(systemName: reminder.isChecked ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(reminder.isChecked ? .green : .primary)
-            }
-            .buttonStyle(PlainButtonStyle())
-
-            VStack(alignment: .leading) {
-                let components = reminder.text.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
-                
-                
-                ForEach(components, id: \.self) { component in
-                    HStack {
-                        if component.contains("Room:") {
-                            HStack{
-                                Image(systemName: "location")
-                                Text(component)
-                                    .padding()
-                                    .background(Color(.systemGray5))
-                                    .cornerRadius(10)
-                            }
-                            
-                        }else if component.contains("Plant:") {
-                                HStack{
-                                    Image(systemName: "location")
-                                    Text(component)
-                                        .padding()
-                                        .background(Color(.systemGray5))
-                                        .cornerRadius(10)
-                                    
-                                }
-                            
-                        } else if component.contains("Light:") {
-                            Image(systemName: "sun.max")
-                            Text(component)
-                                .padding()
-                                .background(Color(.systemGray5))
-                                .cornerRadius(10)
-                             
-                        } else if component.contains("Watering Days:") {
-                            Image(systemName: "drop")
-                            Text(component)
-                                .padding()
-                                .background(Color(.systemGray5))
-                                .cornerRadius(10)
-                                
-                        } else if component.contains("Water Amount:") {
-                            Image(systemName: "drop")
-                            Text(component)
-                                .padding()
-                                .background(Color(.systemGray5))
-                                .cornerRadius(10)
-                            
-                        } else {
-                            Text(component)
-                        }
-                    }
-                }
-            }
-            .padding(.vertical, 5)
-        }
-    }
-}
 
 struct SetReminder: View {
     @State private var reminders: [Reminder] = []
-    @State var showsheet = false
+    @State var remindersheet = false
 
     // State variables for the selection menus with default values
     @State private var selectedRoom: String? = "Bedroom"
@@ -98,9 +16,17 @@ struct SetReminder: View {
     var body: some View {
         NavigationView {
             VStack {
+                
+                
                 if reminders.isEmpty {
-                    Finished(showsheet: $showsheet)
+                    Finished(remindersheet: $remindersheet)
                 } else {
+                    Text("Today")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .offset(x: -140, y: 10.55)
+
+                                        Spacer()
                     List {
                         ForEach(reminders) { reminder in
                             ReminderView(reminder: reminder) {
@@ -112,24 +38,30 @@ struct SetReminder: View {
                         .onDelete(perform: deleteItems)
                     }
                     .navigationTitle("My Plants 🌱")
-
+                    
+                                       
                     Spacer()
 
                     Button(action: {
-                        showsheet.toggle()
+                        remindersheet.toggle()
                     }) {
                         HStack {
+                            
                             Image(systemName: "plus.circle.fill")
+                                .foregroundColor(Color.trq)
                             Text("New Reminder")
+                                .foregroundColor(Color.trq)
+                                
                                 
                         }
-//                        .frame(minWidth: .infinity, maxWidth: .infinity, alignment: .leading)
-//                        .padding(.bottom,1)
+                       
                     }
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 10.0)
+                    .padding(.trailing,230 )
                 }
             }
-            .sheet(isPresented: $showsheet) {
+            .navigationBarBackButtonHidden(true)
+            .sheet(isPresented: $remindersheet) {
                 NavigationView {
                     Form {
                         Section(header: Text(" ")) {
@@ -158,7 +90,7 @@ struct SetReminder: View {
                                     Text("Full Sun").tag("Full Sun" as String?)
                                     Text("Partial Sun").tag("Partial Sun" as String?)
                                     Text("Low Light").tag("Low Light" as String?)
-                                    
+                                        .foregroundColor(.gray)
                                 }
                                 .pickerStyle(MenuPickerStyle())
                                
@@ -166,7 +98,7 @@ struct SetReminder: View {
                         }
                         
                         HStack {
-                            Image(systemName: "calendar")
+                            Image(systemName: "drop")
                             Picker("Watering Days", selection: $selectedWateringDays) {
                                 Text("Every day").tag("Every day" as String?)
                                 Text("Every 2 days").tag("Every 2 days" as String?)
@@ -190,8 +122,10 @@ struct SetReminder: View {
                         }
                     }
                     .navigationBarItems(leading: Button("Cancel") {
-                        showsheet.toggle() // Dismiss the sheet
-                    }, trailing: Button("Save") {
+                        
+                        remindersheet.toggle()
+                    }.foregroundColor(Color.trq)
+                                        , trailing: Button("Save") {
                         let reminderText = "Plant: \(plantName), Room: \(selectedRoom ?? "N/A"), Light: \(selectedLight ?? "N/A"), Watering Days: \(selectedWateringDays ?? "N/A"), Water Amount: \(selectedWaterAmount ?? "N/A")"
                         let newReminder = Reminder(text: reminderText, isChecked: false)
                         reminders.append(newReminder)
@@ -201,12 +135,14 @@ struct SetReminder: View {
                         selectedLight = "Full Sun"
                         selectedWateringDays = "Every day"
                         selectedWaterAmount = "20-50 ml"
-                        plantName = "" // Reset plant name
+                        plantName = ""
 
-                        showsheet.toggle()
-                    })
+                        remindersheet.toggle()
+                    }.foregroundColor(Color.trq))
+                    .navigationBarBackButtonHidden(true)
                     .navigationBarTitle(Text("Set Reminder"), displayMode: .inline)
                 }
+                
             }
         }
     }

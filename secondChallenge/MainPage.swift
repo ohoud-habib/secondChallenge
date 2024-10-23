@@ -1,25 +1,10 @@
-//
-//  MainPage.swift
-//  secondChallenge
-//
-//  Created by ohoud on 19/04/1446 AH.
-//
-
-//
-//  ContentView.swift
-//  secondChallenge
-//
-//  Created by ohoud on 17/04/1446 AH.
-//
-
 import SwiftUI
 
 struct MainPage: View {
+    @State private var reminders: [Reminder] = [] // Store reminders
+
     var body: some View {
-      
-        
-            
-            
+        NavigationView {
             VStack {
                 Text("My Plants 🌱")
                     .font(.largeTitle)
@@ -27,42 +12,36 @@ struct MainPage: View {
                     .padding(.bottom, 160.0)
                     .padding(.trailing, 170.0)
                     .offset(x: -7, y: -40.55)
-                
-                Image("plant")
+
+                Image("plant") // Make sure you have a "plant" image in your assets
                     .imageScale(.large)
                     .foregroundStyle(.tint)
                     .offset(x: 0, y: -70.55)
-                                    
-                Text("Start your plant journey! ")
-                    .font(.custom("SFPro", size: 25))                    .offset(x: 0, y: -40.55)
-                
-                   
-                
-                
+
+                Text("Start your plant journey!")
+                    .font(.custom("SFPro", size: 25))
+                    .offset(x: 0, y: -40.55)
+
                 Text("Now all your plants will be in one place and we will help you take care of them :)🪴")
                     .font(.custom("SFPro", size: 16))
-                    .foregroundColor(Color(red: 0.6235294117647059, green: 0.6235294117647059, blue: 0.5686274509803921))
+                    .foregroundColor(Color(red: 0.623529, green: 0.623529, blue: 0.568627))
                     .multilineTextAlignment(.center)
                     .offset(x: 0, y: -20.55)
-                
-                
-                Button(action: {
-                    
-                    print("set Plant Reminder Button Pressed")
-                }) {
+
+                NavigationLink(destination: SetReminder()) {
                     Text("Set Plant Reminder")
                         .font(.custom("SFProRounded-Bold", size: 18))
                         .foregroundColor(Color.black)
-                        .frame(maxWidth: .infinity)
+                        .frame(width: 280, height: 40)
                         .padding()
-                        .background(Color(red: 0.1568627450980392, green: 0.8784313725490196, blue: 0.6588235294117647))
+                        .background(Color(red: 0.156863, green: 0.878431, blue: 0.658823))
                         .cornerRadius(10)
                         .font(.headline)
                 }
                 .padding()
-            
+            }
+            .padding()
         }
-        .padding()
     }
 }
 
