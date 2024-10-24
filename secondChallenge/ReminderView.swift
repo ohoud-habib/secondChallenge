@@ -15,7 +15,7 @@ struct ReminderView: View {
     var roomTextColor: Color = .gray
     var lightTextColor: Color = .yell
     var wateringDaysTextColor: Color = .orange
-    var waterAmountTextColor: Color = .babyBlue 
+    var waterAmountTextColor: Color = .babyBlue
 
     var body: some View {
         HStack {
@@ -28,95 +28,52 @@ struct ReminderView: View {
             VStack(alignment: .leading) {
                 let components = reminder.text.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
 
-                // Extract room and watering days for top components
-                let roomComponent = components.first(where: { $0.contains("Room:") })
-                let wateringDaysComponent = components.first(where: { $0.contains("Watering Days:") })
-
-                // Display room and watering days side by side
+                // Display room and watering days
                 HStack {
-                    if let room = roomComponent {
-                        let (icon, value, textColor) = getComponentValue(for: room)
-                        HStack(spacing: 2) {
-                            Image(systemName: icon)
-                                .foregroundColor(textColor)
-                            Text(value)
-                                .foregroundColor(textColor)
-                        }
-                    }
-
-                    if let wateringDays = wateringDaysComponent {
-                        let (icon, value, textColor) = getComponentValue(for: wateringDays)
-                        HStack(spacing: 2) {
-                            Image(systemName: icon)
-                                .foregroundColor(textColor)
-                            Text(value)
-                                .foregroundColor(textColor)
-                        }
-                    }
+                    displayComponent(components, for: "Room:", icon: "location", textColor: roomTextColor)
+                    displayComponent(components, for: "Watering Days:", icon: "drop", textColor: wateringDaysTextColor)
                 }
 
-                // Extract the plant name for the title
-                if let plantComponent = components.first(where: { $0.contains("Plant:") }) {
-                    let plantName = plantComponent.replacingOccurrences(of: "Plant: ", with: "")
+                // Display plant name
+                if let plantName = getValue(for: "Plant:", from: components) {
                     Text(plantName)
-                        .font(.largeTitle) // Title font size
+                        .font(.largeTitle)
                         .foregroundColor(plantTextColor)
                 }
 
-                // Extract light and water amount for bottom components
-                let lightComponent = components.first(where: { $0.contains("Light:") })
-                let waterAmountComponent = components.first(where: { $0.contains("Water Amount:") })
-
-                // Display light and water amount in adjacent grey rectangles
-                HStack(spacing: 10) { // Adjust spacing as needed
-                    if let light = lightComponent {
-                        let (icon, value, textColor) = getComponentValue(for: light)
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(width: 100, height: 30) // Adjust width and height for smaller size
-                            HStack(spacing: 2) {
-                                Image(systemName: icon)
-                                    .foregroundColor(textColor)
-                                Text(value)
-                                    .foregroundColor(textColor)
-                            }
-                        }
-                    }
-
-                    if let waterAmount = waterAmountComponent {
-                        let (icon, value, textColor) = getComponentValue(for: waterAmount)
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(width: 100, height: 30) // Adjust width and height for smaller size
-                            HStack(spacing: 2) {
-                                Image(systemName: icon)
-                                    .foregroundColor(textColor)
-                                Text(value)
-                                    .foregroundColor(textColor)
-                            }
-                        }
-                    }
+                // Display light and water amount
+                HStack(spacing: 10) {
+                    displayComponent(components, for: "Light:", icon: "sun.max", textColor: lightTextColor)
+                    displayComponent(components, for: "Water Amount:", icon: "drop", textColor: waterAmountTextColor)
                 }
             }
             .padding(.vertical, 5)
         }
     }
 
-    // Function to return icon, selected value, and text color based on the component type
-    private func getComponentValue(for component: String) -> (String, String, Color) {
-        if component.contains("Room:") {
-            return ("location", component.replacingOccurrences(of: "Room: ", with: ""), roomTextColor) // Return room
-        } else if component.contains("Light:") {
-            return ("sun.max", component.replacingOccurrences(of: "Light: ", with: ""), lightTextColor) // Return light
-        } else if component.contains("Watering Days:") {
-            return ("drop", component.replacingOccurrences(of: "Watering Days: ", with: ""), wateringDaysTextColor) // Return watering days
-        } else if component.contains("Water Amount:") {
-            return ("drop", component.replacingOccurrences(of: "Water Amount: ", with: ""), waterAmountTextColor) // Return water amount
-        } else {
-            return ("questionmark", component, .gray) // Default case
+    // Helper function to display components
+    private func displayComponent(_ components: [String], for key: String, icon: String, textColor: Color) -> some View {
+        if let value = getValue(for: key, from: components) {
+            return AnyView(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(width: 100, height: 30)
+                    HStack(spacing: 2) {
+                        Image(systemName: icon)
+                            .foregroundColor(textColor)
+                        Text(value)
+                            .foregroundColor(textColor)
+                    }
+                }
+            )
         }
+        return AnyView(EmptyView())
+    }
+
+    // Function to extract value for a given key
+    private func getValue(for key: String, from components: [String]) -> String? {
+        components.first { $0.contains(key) }?.replacingOccurrences(of: "\(key) ", with: "")
     }
 }
 

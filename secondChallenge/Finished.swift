@@ -5,7 +5,16 @@ struct Finished: View {
 
     var body: some View {
         VStack {
-            Image("blinkplant") // Ensure you have an image named "blinkplant"
+            
+            
+            Text("My Plants 🌱")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .offset(x: -80, y: 40.55)
+            Divider()
+            .overlay(Color.gray)
+            .offset(x: 0, y: 25.55)
+            Image("blinkplant") 
                 .imageScale(.large)
                 .foregroundStyle(.tint)
                 .offset(x: 0, y: 150.55)
@@ -34,7 +43,8 @@ struct Finished: View {
             .padding(.top, 360.0)
             .padding(.trailing, 240)
         }
-        .navigationTitle("My Plants 🌱")
+     
+        
     }
 }
 

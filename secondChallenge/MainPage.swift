@@ -6,13 +6,9 @@ struct MainPage: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("My Plants 🌱")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 160.0)
-                    .padding(.trailing, 170.0)
-                    .offset(x: -7, y: -40.55)
-
+                Divider()
+                .overlay(Color.gray)
+                .offset(x: 0, y: -150.55)
                 Image("plant") // Make sure you have a "plant" image in your assets
                     .imageScale(.large)
                     .foregroundStyle(.tint)
@@ -32,7 +28,7 @@ struct MainPage: View {
                     Text("Set Plant Reminder")
                         .font(.custom("SFProRounded-Bold", size: 18))
                         .foregroundColor(Color.black)
-                        .frame(width: 280, height: 40)
+                        .frame(width: 280, height: 13)
                         .padding()
                         .background(Color(red: 0.156863, green: 0.878431, blue: 0.658823))
                         .cornerRadius(10)
@@ -40,7 +36,8 @@ struct MainPage: View {
                 }
                 .padding()
             }
-            .padding()
+            .navigationTitle("My Plants 🌱")
+          
         }
     }
 }
