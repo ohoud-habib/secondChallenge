@@ -8,6 +8,8 @@ struct SetReminder: View {
         NavigationView {
             VStack {
                 if reminders.isEmpty {
+                    MainPage(remindersheet: $remindersheet)
+                } else if allRemindersChecked() {
                     Finished(remindersheet: $remindersheet)
                 } else {
                     ReminderList(reminders: $reminders, remindersheet: $remindersheet)
@@ -16,11 +18,16 @@ struct SetReminder: View {
             .sheet(isPresented: $remindersheet) {
                 ReminderForm(reminders: $reminders, isPresented: $remindersheet)
             }
-            
             .navigationBarBackButtonHidden(true)
         }
     }
+
+    private func allRemindersChecked() -> Bool {
+        reminders.allSatisfy { $0.isChecked }
+    }
 }
+
+
 
 struct ReminderList: View {
     @Binding var reminders: [Reminder]
@@ -34,7 +41,8 @@ struct ReminderList: View {
                 .offset(x: -140, y: 10.55)
 
             List {
-                ForEach(reminders) { reminder in
+                
+                ForEach(reminders.sorted(by: { !$0.isChecked && $1.isChecked })) { reminder in
                     ReminderView(reminder: reminder) {
                         if let index = reminders.firstIndex(where: { $0.id == reminder.id }) {
                             reminders[index].isChecked.toggle()
@@ -43,12 +51,13 @@ struct ReminderList: View {
                 }
                 .onDelete(perform: deleteItems)
             }
-            .listStyle(PlainListStyle()) // Optional: Use PlainListStyle for a cleaner look
+            .listStyle(PlainListStyle())
             
             addButton
-                .padding(.bottom) // Added padding for better spacing
+                .padding(.bottom)
         }
         .navigationTitle("My Plants 🌱")
+        .navigationBarBackButtonHidden(true)
     }
 
     private var addButton: some View {

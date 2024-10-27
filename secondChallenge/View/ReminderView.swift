@@ -1,16 +1,9 @@
 import SwiftUI
 
-struct Reminder: Identifiable {
-    let id = UUID()
-    var text: String
-    var isChecked: Bool
-}
-
 struct ReminderView: View {
     var reminder: Reminder
     var toggleAction: () -> Void
 
-    // Define colors for each component
     var plantTextColor: Color = .white
     var roomTextColor: Color = .gray
     var lightTextColor: Color = .yell
@@ -28,20 +21,15 @@ struct ReminderView: View {
             VStack(alignment: .leading) {
                 let components = reminder.text.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
 
-                // Display room and watering days
                 HStack {
                     displayComponent(components, for: "Room:", icon: "location", textColor: roomTextColor)
                     displayComponent(components, for: "Watering Days:", icon: "drop", textColor: wateringDaysTextColor)
                 }
-
-                // Display plant name
                 if let plantName = getValue(for: "Plant:", from: components) {
                     Text(plantName)
                         .font(.largeTitle)
                         .foregroundColor(plantTextColor)
                 }
-
-                // Display light and water amount
                 HStack(spacing: 10) {
                     displayComponent(components, for: "Light:", icon: "sun.max", textColor: lightTextColor)
                     displayComponent(components, for: "Water Amount:", icon: "drop", textColor: waterAmountTextColor)

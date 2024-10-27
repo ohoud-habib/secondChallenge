@@ -5,8 +5,6 @@ struct Finished: View {
 
     var body: some View {
         VStack {
-            
-            
             Text("My Plants 🌱")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -43,8 +41,8 @@ struct Finished: View {
             .padding(.top, 360.0)
             .padding(.trailing, 240)
         }
+        .navigationBarBackButtonHidden(true)
      
-        
     }
 }
 
