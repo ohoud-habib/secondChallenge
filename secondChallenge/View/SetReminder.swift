@@ -3,6 +3,7 @@ import SwiftUI
 struct SetReminder: View {
     @State private var reminders: [Reminder] = []
     @State private var remindersheet = false
+    @State private var editingReminder: Reminder?
 
     var body: some View {
         NavigationView {
@@ -12,14 +13,22 @@ struct SetReminder: View {
                 } else if allRemindersChecked() {
                     Finished(remindersheet: $remindersheet)
                 } else {
-                    ReminderList(reminders: $reminders, remindersheet: $remindersheet)
+                    ReminderList(reminders: $reminders, remindersheet: $remindersheet, onEdit: editReminder)
                 }
             }
             .sheet(isPresented: $remindersheet) {
-                ReminderForm(reminders: $reminders, isPresented: $remindersheet)
+                ReminderForm(reminders: $reminders, isPresented: $remindersheet, editingReminder: $editingReminder)
+                    .onDisappear {
+                     editingReminder = nil
+                                        }
             }
             .navigationBarBackButtonHidden(true)
         }
+    }
+
+    private func editReminder(reminder: Reminder) {
+        editingReminder = reminder
+        remindersheet = true // Show the reminder form
     }
 
     private func allRemindersChecked() -> Bool {
@@ -27,32 +36,34 @@ struct SetReminder: View {
     }
 }
 
-
-
 struct ReminderList: View {
     @Binding var reminders: [Reminder]
     @Binding var remindersheet: Bool
+    var onEdit: (Reminder) -> Void
 
     var body: some View {
         VStack {
+            
             Text("Today")
-                .font(.title)
-                .foregroundColor(.white)
-                .offset(x: -140, y: 10.55)
-
+             .font(.title)
+              .foregroundColor(.white)
+                 .offset(x: -140, y: 10.55)
             List {
-                
                 ForEach(reminders.sorted(by: { !$0.isChecked && $1.isChecked })) { reminder in
-                    ReminderView(reminder: reminder) {
-                        if let index = reminders.firstIndex(where: { $0.id == reminder.id }) {
-                            reminders[index].isChecked.toggle()
-                        }
+                    HStack {
+                        ReminderView(reminder: reminder, toggleAction: {
+                            if let index = reminders.firstIndex(where: { $0.id == reminder.id }) {
+                                reminders[index].isChecked.toggle()
+                            }
+                        }, editAction: {
+                            onEdit(reminder) 
+                        })
                     }
                 }
                 .onDelete(perform: deleteItems)
             }
             .listStyle(PlainListStyle())
-            
+
             addButton
                 .padding(.bottom)
         }

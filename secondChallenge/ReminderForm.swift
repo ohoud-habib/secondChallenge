@@ -3,6 +3,8 @@ import SwiftUI
 struct ReminderForm: View {
     @Binding var reminders: [Reminder]
     @Binding var isPresented: Bool
+    @Binding var editingReminder: Reminder?
+    
     @State private var selectedRoom: String = "Bedroom"
     @State private var selectedLight: String = "Full Sun"
     @State private var selectedWateringDays: String = "Every day"
@@ -12,6 +14,7 @@ struct ReminderForm: View {
     var body: some View {
         NavigationView {
             Form {
+                // reminder details
                 Section(header: Text("")) {
                     HStack {
                         Text("Plant Name")
@@ -61,25 +64,43 @@ struct ReminderForm: View {
                     }
                 
             }
+            //navigation Bar Items
             .navigationBarItems(leading: cancelButton, trailing: saveButton)
-            .navigationBarTitle("Set Reminder", displayMode: .inline)
+            .navigationBarTitle(editingReminder == nil ? "Set Reminder" : "Edit Reminder", displayMode: .inline)
+            // edit reminder
+            .onAppear {
+                if let reminder = editingReminder {
+                    populateFields(from: reminder)
+                }
+            }
         }
     }
-
+        
     private var cancelButton: some View {
         Button("Cancel") {
             isPresented.toggle()
+            editingReminder = nil // Reset editing reminder on cancel
         }
         .foregroundColor(Color.trq)
     }
+    
 
     private var saveButton: some View {
         Button("Save") {
             let reminderText = "Plant: \(plantName), Room: \(selectedRoom), Light: \(selectedLight), Watering Days: \(selectedWateringDays), Water Amount: \(selectedWaterAmount)"
             
-            reminders.append(Reminder(text: reminderText, isChecked: false))
+            if let editingReminder = editingReminder {
+                // Update existing reminder
+                if let index = reminders.firstIndex(where: { $0.id == editingReminder.id }) {
+                    reminders[index].text = reminderText
+                }
+            } else {
+                // Add new reminder
+                reminders.append(Reminder(text: reminderText, isChecked: false))
+            }
+
             resetForm()
-            isPresented.toggle() // Dismiss the form
+            isPresented.toggle() // get out of the form
         }
         .foregroundColor(Color.trq)
         .disabled(plantName.isEmpty)
@@ -93,8 +114,22 @@ struct ReminderForm: View {
         selectedWaterAmount = "20-50 ml"
         plantName = ""
     }
+    
+    private func populateFields(from reminder: Reminder) {
+        let components = reminder.text.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
+        plantName = getValue(for: "Plant:", from: components) ?? ""
+        selectedRoom = getValue(for: "Room:", from: components) ?? "Bedroom"
+        selectedLight = getValue(for: "Light:", from: components) ?? "Full Sun"
+        selectedWateringDays = getValue(for: "Watering Days:", from: components) ?? "Every day"
+        selectedWaterAmount = getValue(for: "Water Amount:", from: components) ?? "20-50 ml"
+    }
+
+    // Function to extract value for a given key
+    private func getValue(for key: String, from components: [String]) -> String? {
+        components.first { $0.contains(key) }?.replacingOccurrences(of: "\(key) ", with: "")
+    }
 }
 
 #Preview {
-    ReminderForm(reminders: .constant([]), isPresented: .constant(true))
+    ReminderForm(reminders: .constant([]), isPresented: .constant(true), editingReminder: .constant(nil))
 }

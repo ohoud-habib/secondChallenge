@@ -6,7 +6,7 @@ struct MainPage: View {
         VStack {
             Divider()
                 .overlay(Color.gray)
-                .offset(x: 0, y: -140.55)
+                .offset(x: 0, y: -130.55)
 
             Image("plant")
                 .imageScale(.large)
