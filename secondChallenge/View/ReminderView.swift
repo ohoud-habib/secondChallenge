@@ -16,7 +16,7 @@ struct ReminderView: View {
         HStack {
             Button(action: toggleAction) {
                 Image(systemName: reminder.isChecked ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(reminder.isChecked ? .purple : .primary)
+                    .foregroundColor(reminder.isChecked ? .trq : .primary)
             }
             .buttonStyle(PlainButtonStyle())
 

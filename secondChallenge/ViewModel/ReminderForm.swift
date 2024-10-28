@@ -20,7 +20,7 @@ struct ReminderForm: View {
                         Text("Plant Name")
                         Divider()
                             .frame(width: 2, height: 30)
-                            .overlay(Color.green)
+                            .overlay(Color.trq)
                         TextField("Pothos", text: $plantName)
                             .autocapitalization(.words)
                     }
@@ -32,6 +32,9 @@ struct ReminderForm: View {
                         Picker("Room", selection: $selectedRoom) {
                             Text("Bedroom").tag("Bedroom")
                             Text("Kitchen").tag("Kitchen")
+                            Text("livingroom").tag("livingroom")
+                            Text("bathroom").tag("bathroom")
+                            Text("balcony").tag("balcony")
                         }
                     }
                     
@@ -51,6 +54,8 @@ struct ReminderForm: View {
                             Text("Every 2 days").tag("Every 2 days")
                             Text("Every 3 days").tag("Every 3 days")
                             Text("Once a week").tag("Once a week")
+                            Text("every 10 days").tag("every 10 days")
+                            Text("every two weeks").tag("every two weeks")
                         }
                     }
                     
