@@ -10,3 +10,4 @@ struct Reminder: Identifiable {
     var text: String
     var isChecked: Bool
 }
+
